@@ -70,6 +70,6 @@ class DemoUtilsTest { // test files should not be p ublic
     int gradeTwo = 5;
 
     assertTrue(demoUtils.isGreater(gradeOne, gradeTwo), "This should return true");
-    assertTrue(demoUtils.isGreater(gradeTwo, gradeOne), "This should return true");
+    assertFalse(demoUtils.isGreater(gradeTwo, gradeOne), "This should return true");
   }
 }
