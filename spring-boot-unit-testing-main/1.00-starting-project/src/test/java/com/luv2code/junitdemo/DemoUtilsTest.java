@@ -14,26 +14,26 @@ class DemoUtilsTest { // test files should not be p ublic
     demoUtils = new DemoUtils();
     System.out.println("@BeforeEach executes before the execution of each test method");
   }
-//
-//  @BeforeAll
-//  static void setUpBeforeEachClass() {
-//    System.out.println("@BeforeAll executes only once before all test methods execution in the class");
-//  }
-//
-//  @AfterAll
-//  static void tearDownAfterAll() {
-//    System.out.println("@AfterAll executes only once after all test methods execution in the class");
-//  }
-//
-//
-//  @AfterEach
-//  void tearDownAfterEach() {
-//    System.out.println("Running @AfterEach");
-//    System.out.println();
-//  }
+
+  @BeforeAll
+  static void setUpBeforeEachClass() {
+    System.out.println("@BeforeAll executes only once before all test methods execution in the class");
+  }
+
+  @AfterAll
+  static void tearDownAfterAll() {
+    System.out.println("@AfterAll executes only once after all test methods execution in the class");
+  }
+
+
+  @AfterEach
+  void tearDownAfterEach() {
+    System.out.println("Running @AfterEach");
+    System.out.println();
+  }
 
   @Test
-  //@DisplayName("Equals and Not Equals")
+  @DisplayName("Equals and Not Equals")
   void testEqualsAndNotEquals() {
     //System.out.println("Running test: testEqualsAndNotEquals");
 
@@ -42,7 +42,7 @@ class DemoUtilsTest { // test files should not be p ublic
   }
 
   @Test
-  //@DisplayName("Null and Not Null")
+  @DisplayName("Null and Not Null")
   void testNullAndNotNull() {
     //System.out.println("Running test: testNullAndNotNull");
     DemoUtils demoUtils = new DemoUtils();
