@@ -117,4 +117,10 @@ class DemoUtilsTest { // test files should not be p ublic
     assertTimeout(Duration.ofSeconds(3), () -> { demoUtils.checkTimeout();}, "Method should execute in 3 seconds.");
   }
 
+  @Test
+  @DisplayName("Multiply")
+  void testMultiply() {
+    assertEquals(12, demoUtils.multiply(2, 6), "2 * 6 must be 12");
+  }
+
 }
