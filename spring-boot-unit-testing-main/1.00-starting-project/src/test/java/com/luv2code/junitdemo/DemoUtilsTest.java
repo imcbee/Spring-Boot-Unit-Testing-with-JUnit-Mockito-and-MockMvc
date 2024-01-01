@@ -4,15 +4,16 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.Simple.class)
 class DemoUtilsTest { // test files should not be p ublic
 
     DemoUtils demoUtils;
 
-//  @BeforeEach
-//  void setUpBeforeEach() {
-//    demoUtils = new DemoUtils();
-//    System.out.println("@BeforeEach executes before the execution of each test method");
-//  }
+  @BeforeEach
+  void setUpBeforeEach() {
+    demoUtils = new DemoUtils();
+    System.out.println("@BeforeEach executes before the execution of each test method");
+  }
 //
 //  @BeforeAll
 //  static void setUpBeforeEachClass() {
@@ -32,7 +33,7 @@ class DemoUtilsTest { // test files should not be p ublic
 //  }
 
   @Test
-  @DisplayName("Equals and Not Equals")
+  //@DisplayName("Equals and Not Equals")
   void testEqualsAndNotEquals() {
     //System.out.println("Running test: testEqualsAndNotEquals");
 
@@ -41,7 +42,7 @@ class DemoUtilsTest { // test files should not be p ublic
   }
 
   @Test
-  @DisplayName("Null and Not Null")
+  //@DisplayName("Null and Not Null")
   void testNullAndNotNull() {
     //System.out.println("Running test: testNullAndNotNull");
     DemoUtils demoUtils = new DemoUtils();
