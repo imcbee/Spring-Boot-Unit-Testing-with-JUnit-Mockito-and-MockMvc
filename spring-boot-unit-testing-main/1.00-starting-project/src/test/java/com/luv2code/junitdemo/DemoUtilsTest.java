@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 //@DisplayNameGeneration(DisplayNameGenerator.Simple.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.Random.class)
 class DemoUtilsTest { // test files should not be p ublic
 
     DemoUtils demoUtils;
@@ -38,7 +38,7 @@ class DemoUtilsTest { // test files should not be p ublic
 
   @Test
   @DisplayName("Equals and Not Equals")
-  @Order(1)
+  //@Order(1)
   void testEqualsAndNotEquals() {
     //System.out.println("Running test: testEqualsAndNotEquals");
 
@@ -48,7 +48,7 @@ class DemoUtilsTest { // test files should not be p ublic
 
   @Test
   @DisplayName("Null and Not Null")
-  @Order(3)
+  //@Order(3)
   void testNullAndNotNull() {
     //System.out.println("Running test: testNullAndNotNull");
     DemoUtils demoUtils = new DemoUtils();
