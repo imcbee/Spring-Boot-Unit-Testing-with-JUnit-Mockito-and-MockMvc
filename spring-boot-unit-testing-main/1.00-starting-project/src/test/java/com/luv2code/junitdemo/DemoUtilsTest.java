@@ -80,7 +80,7 @@ class DemoUtilsTest { // test files should not be p ublic
   void testArrayEquals() {
     String[] stringArray = {"A", "B", "C"};
 
-    assertArrayEquals(stringArray, demoUtils.getFirstThreeLettersOfAlphabet(), "arrays should be the same");
+    assertArrayEquals(stringArray, demoUtils.getFirstThreeLettersOfAlphabet(), "Arrays should be the same");
   }
 
   @Test
