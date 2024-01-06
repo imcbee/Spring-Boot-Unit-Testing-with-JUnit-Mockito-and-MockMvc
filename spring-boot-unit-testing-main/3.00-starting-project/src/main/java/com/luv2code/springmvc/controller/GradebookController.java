@@ -1,6 +1,6 @@
 package com.luv2code.springmvc.controller;
 
-import com.luv2code.springmvc.models.*;
+import com.luv2code.springmvc.models.Gradebook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +20,8 @@ public class GradebookController {
 
 
 	@GetMapping("/studentInformation/{id}")
-		public String studentInformation(@PathVariable int id, Model m) {
+	public String studentInformation(@PathVariable int id, Model m) {
 		return "studentInformation";
-		}
+	}
 
 }
