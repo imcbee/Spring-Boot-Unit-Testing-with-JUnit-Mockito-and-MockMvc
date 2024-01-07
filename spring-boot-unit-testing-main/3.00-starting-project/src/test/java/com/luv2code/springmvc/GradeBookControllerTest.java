@@ -49,7 +49,7 @@ public class GradeBookControllerTest {
   private StudentDao studentDao;
 
   @Mock
-  private StudentAndGradeService studentAndGradeServiceMock;
+  private StudentAndGradeService studentCreateServiceMock;
 
   // this is static because all BeforeAll methods must be static
   @BeforeAll
@@ -73,9 +73,9 @@ public class GradeBookControllerTest {
 
     List<CollegeStudent> collegeStudentList = new ArrayList<>(Arrays.asList(studentOne, studentTwo));
 
-    when(studentAndGradeServiceMock.getGradebook()).thenReturn(collegeStudentList);
+    when(studentCreateServiceMock.getGradebook()).thenReturn(collegeStudentList);
 
-    assertIterableEquals(collegeStudentList, studentAndGradeServiceMock.getGradebook());
+    assertIterableEquals(collegeStudentList, studentCreateServiceMock.getGradebook());
 
     MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/"))
       .andExpect(status().isOk()).andReturn();
@@ -88,6 +88,15 @@ public class GradeBookControllerTest {
 
   @Test
   public void createStudentHttpRequest() throws Exception{
+    CollegeStudent studentOne = new CollegeStudent("Eric",
+      "Roby", "eric_roby@luv2code.com");
+
+    List<CollegeStudent> collegeStudentList = new ArrayList<>(Arrays.asList(studentOne));
+
+    when(studentCreateServiceMock.getGradebook()).thenReturn(collegeStudentList);
+
+    assertIterableEquals(collegeStudentList, studentCreateServiceMock.getGradebook());
+
     MvcResult mvcResult = this.mockMvc.perform(post("/")
       .contentType(MediaType.APPLICATION_JSON)
       .param("firstname", request.getParameterValues("firstname"))

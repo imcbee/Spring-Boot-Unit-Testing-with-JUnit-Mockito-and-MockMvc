@@ -31,6 +31,9 @@ public class GradebookController {
       student.getLastname(),
       student.getEmailAddress());
 
+    Iterable<CollegeStudent> collegeStudents = studentAndGradeService.getGradebook();
+    model.addAttribute("students", collegeStudents);
+
     return "index";
   }
 
