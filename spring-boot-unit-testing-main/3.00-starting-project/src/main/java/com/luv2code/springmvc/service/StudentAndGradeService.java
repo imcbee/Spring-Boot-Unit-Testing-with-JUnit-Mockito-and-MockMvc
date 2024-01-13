@@ -1,8 +1,7 @@
 package com.luv2code.springmvc.service;
 
-import com.luv2code.springmvc.models.CollegeStudent;
-import com.luv2code.springmvc.models.MathGrade;
-import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.models.*;
+import com.luv2code.springmvc.repository.HistoryGradesDao;
 import com.luv2code.springmvc.repository.MathGradesDao;
 import com.luv2code.springmvc.repository.ScienceGradesDao;
 import com.luv2code.springmvc.repository.StudentDao;
@@ -33,6 +32,13 @@ public class StudentAndGradeService {
 
   @Autowired
   private ScienceGradesDao scienceGradeDao;
+
+  @Autowired
+  @Qualifier("historyGrades")
+  private HistoryGrade historyGrade;
+
+  @Autowired
+  private HistoryGradesDao historyGradeDao;
 
   public void createStudent(String firstname, String lastname, String emailAddress) {
     CollegeStudent student = new CollegeStudent(firstname, lastname, emailAddress);
@@ -80,8 +86,45 @@ public class StudentAndGradeService {
         scienceGradeDao.save(scienceGrade);
         return true;
       }
+      if (gradeType.equals("history")) {
+        historyGrade.setId(0);
+        historyGrade.setGrade(grade);
+        historyGrade.setStudentId(studentId);
+        historyGradeDao.save(historyGrade);
+        return true;
+      }
     }
 
     return false;
+  }
+
+  public int deleteGrade(int id, String gradeType) {
+    int studentId = 0;
+
+    if(gradeType.equals("math")) {
+      Optional<MathGrade> grade = mathGradeDao.findById(id);
+      if(!grade.isPresent()) {
+        return studentId;
+      }
+      studentId = grade.get().getStudentId();
+      mathGradeDao.deleteById(id);
+    }
+    if(gradeType.equals("history")) {
+      Optional<HistoryGrade> grade = historyGradeDao.findById(id);
+      if(!grade.isPresent()) {
+        return studentId;
+      }
+      studentId = grade.get().getStudentId();
+      historyGradeDao.deleteById(id);
+    }
+    if(gradeType.equals("science")) {
+      Optional<ScienceGrade> grade = scienceGradeDao.findById(id);
+      if(!grade.isPresent()) {
+        return studentId;
+      }
+      studentId = grade.get().getStudentId();
+      historyGradeDao.deleteById(id);
+    }
+    return studentId;
   }
 }
