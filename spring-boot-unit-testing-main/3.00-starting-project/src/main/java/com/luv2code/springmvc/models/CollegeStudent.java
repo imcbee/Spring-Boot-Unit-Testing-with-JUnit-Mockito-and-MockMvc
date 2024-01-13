@@ -65,14 +65,14 @@ public class CollegeStudent implements Student {
     @Override
     public String toString() {
         return "CollegeStudent{" +
-                "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", emailAddress='" + emailAddress + '\'' +
-                '}';
+          "id=" + id +
+          ", firstname='" + firstname + '\'' +
+          ", lastname='" + lastname + '\'' +
+          ", emailAddress='" + emailAddress + '\'' +
+          '}';
     }
 
     public String studentInformation() {
-       return getFullName() + " " + getEmailAddress();
+        return getFullName() + " " + getEmailAddress();
     }
 }

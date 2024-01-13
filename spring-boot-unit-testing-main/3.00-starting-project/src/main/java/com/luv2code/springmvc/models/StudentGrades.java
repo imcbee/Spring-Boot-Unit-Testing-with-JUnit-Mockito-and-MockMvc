@@ -64,7 +64,7 @@ public class StudentGrades {
     @Override
     public String toString() {
         return "StudentGrades{" +
-                "mathGradeResults=" + mathGradeResults +
-                '}';
+          "mathGradeResults=" + mathGradeResults +
+          '}';
     }
 }
