@@ -1,9 +1,6 @@
 package com.luv2code.springmvc;
 
-import com.luv2code.springmvc.models.CollegeStudent;
-import com.luv2code.springmvc.models.HistoryGrade;
-import com.luv2code.springmvc.models.MathGrade;
-import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.models.*;
 import com.luv2code.springmvc.repository.HistoryGradesDao;
 import com.luv2code.springmvc.repository.MathGradesDao;
 import com.luv2code.springmvc.repository.ScienceGradesDao;
@@ -73,16 +70,28 @@ public class StudentAndGradeServiceTest {
   }
 
   @Test
-  public void deleteStudentSErvice() {
+  public void deleteStudentService() {
     Optional<CollegeStudent> deletedCollegeStudent = studentDao.findById(1);
+    Optional<MathGrade> deletedMathGrade = mathGradesDao.findById(1);
+    Optional<ScienceGrade> deletedScienceGrade = scienceGradesDao.findById(1);
+    Optional<HistoryGrade> deletedHistoryGrade = historyGradesDao.findById(1);
 
     assertTrue(deletedCollegeStudent.isPresent(), "Return true");
-
+    assertTrue(deletedMathGrade.isPresent());
+    assertTrue(deletedScienceGrade.isPresent());
+    assertTrue(deletedHistoryGrade.isPresent());
     studentAndGradeService.deleteStudent(1);
 
     deletedCollegeStudent = studentDao.findById(1);
+    deletedMathGrade = mathGradesDao.findById(1);
+    deletedScienceGrade = scienceGradesDao.findById(1);
+    deletedHistoryGrade = historyGradesDao.findById(1);
 
     assertFalse(deletedCollegeStudent.isPresent(), "Return false");
+    assertFalse(deletedMathGrade.isPresent());
+    assertFalse(deletedScienceGrade.isPresent());
+    assertFalse(deletedHistoryGrade.isPresent());
+
   }
 
   @Test
@@ -139,6 +148,28 @@ public class StudentAndGradeServiceTest {
       "Returns student id after delete");
     assertEquals(1, studentAndGradeService.deleteGrade(1, "history"),
       "Returns student id after delete");
+  }
+
+  @Test
+  public void deleteGradeServiceReturnStudentIdOfZero() {
+    assertEquals(0, studentAndGradeService.deleteGrade(0, "science"),
+      "No student should have 0 id");
+    assertEquals(0, studentAndGradeService.deleteGrade(1, "literature"),
+      "No student should have literature class");
+  }
+
+  @Test
+  public void studentInformation() {
+    GradebookCollegeStudent gradebookCollegeStudent = studentAndGradeService.studentInformation(1);
+
+    assertNotNull(gradebookCollegeStudent);
+    assertEquals(1, gradebookCollegeStudent.getId());
+    assertEquals("Ian", gradebookCollegeStudent.getFirstname());
+    assertEquals("McBee", gradebookCollegeStudent.getLastname());
+    assertEquals("ian@mcbee", gradebookCollegeStudent.getEmailAddress());
+    assertTrue(gradebookCollegeStudent.getStudentGrades().getMathGradeResults().size() == 1);
+    assertTrue(gradebookCollegeStudent.getStudentGrades().getScienceGradeResults().size() == 1);
+    assertTrue(gradebookCollegeStudent.getStudentGrades().getHistoryGradeResults().size() == 1);
   }
 
   @AfterEach
