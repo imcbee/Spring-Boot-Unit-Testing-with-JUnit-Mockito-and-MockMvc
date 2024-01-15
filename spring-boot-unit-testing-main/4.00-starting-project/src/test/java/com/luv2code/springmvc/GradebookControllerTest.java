@@ -21,10 +21,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource("/application-test.properties")
 @AutoConfigureMockMvc
@@ -109,7 +118,73 @@ public class GradebookControllerTest {
   }
 
   @Test
-  public void
+  public void getStudentsHttpRequest() throws Exception {
+    collegeStudent.setFirstname("Ian");
+    collegeStudent.setLastname("McBee");
+    collegeStudent.setEmailAddress("ian@mcbee");
+
+    entityManager.persist(collegeStudent);
+    entityManager.flush();
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/"))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+      .andExpect(jsonPath("$", hasSize(2)));
+  }
+
+  @Test
+  public void createStudentHttpRequest() throws Exception {
+    collegeStudent.setFirstname("Ian");
+    collegeStudent.setLastname("McBee");
+    collegeStudent.setEmailAddress("ian@mcbee");
+
+    mockMvc.perform(post("/")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(collegeStudent)))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$", hasSize(2)));
+
+    CollegeStudent verifyStudent = studentDao.findByEmailAddress("ian@mcbee");
+    assertNotNull(verifyStudent, "Student should be valid");
+    assertEquals(verifyStudent.getEmailAddress(), collegeStudent.getEmailAddress());
+  }
+
+  @Test
+  public void deleteStudentHttpRequest() throws Exception{
+    assertTrue(studentDao.findById(1).isPresent());
+
+    mockMvc.perform(MockMvcRequestBuilders.delete("/student/{id}", 1))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+      .andExpect(jsonPath("$", hasSize(0)));
+
+    assertFalse(studentDao.findById(1).isPresent());
+  }
+
+  @Test
+  public void deleteStudentHttpRequestErrorPage() throws Exception {
+    assertFalse(studentDao.findById(0).isPresent());
+
+    mockMvc.perform(MockMvcRequestBuilders.delete("/student/{id}", 0))
+      .andExpect(status().is4xxClientError())
+      .andExpect(jsonPath("$.status", is(404)))
+      .andExpect(jsonPath("$.message", is("Student or Grade was not found")));
+  }
+
+  @Test
+  public void getStudentInformationHttpRequest() throws Exception {
+    Optional<CollegeStudent> student = studentDao.findById(1);
+
+    assertTrue(student.isPresent());
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/studentInformation/{id}", 1))
+      .andExpect(status().isOk())
+      .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+      .andExpect(jsonPath("$.id", is(1)))
+      .andExpect(jsonPath("$.firstname", is("Ian")))
+      .andExpect(jsonPath("$.lastname", is("McBee")))
+      .andExpect(jsonPath("$.emailAddress", is("ian@mcbee")));
+  }
 
   @AfterEach
   public void setupAfterTransaction() {
