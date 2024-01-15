@@ -43,7 +43,11 @@ public class GradebookController {
     @PostMapping(value = "/")
     public List<GradebookCollegeStudent> createStudent(@RequestBody CollegeStudent student) {
 
-        studentService.createStudent(student.getFirstname(), student.getLastname(), student.getEmailAddress());
+        studentService.createStudent(
+          student.getFirstname(),
+          student.getLastname(),
+          student.getEmailAddress()
+        );
         gradebook = studentService.getGradebook();
         return gradebook.getStudents();
     }
@@ -87,7 +91,8 @@ public class GradebookController {
     }
 
     @DeleteMapping("/grades/{id}/{gradeType}")
-    public GradebookCollegeStudent deleteGrade(@PathVariable int id, @PathVariable String gradeType) {
+    public GradebookCollegeStudent deleteGrade(@PathVariable int id,
+                                               @PathVariable String gradeType) {
 
         int studentId = studentService.deleteGrade(id, gradeType);
 
