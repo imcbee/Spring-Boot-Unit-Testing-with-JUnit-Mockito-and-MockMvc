@@ -1,5 +1,7 @@
 package com.luv2code.springmvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.repository.HistoryGradesDao;
 import com.luv2code.springmvc.repository.MathGradesDao;
 import com.luv2code.springmvc.repository.ScienceGradesDao;
@@ -14,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -77,6 +81,17 @@ public class GradebookControllerTest {
   @Value("${sql.script.delete.history.grade}")
   private String sqlDeleteHistoryGrade;
 
+  @Autowired
+  private MockMvc mockMvc;
+
+  @Autowired
+  ObjectMapper objectMapper;
+
+  @Autowired
+  private CollegeStudent collegeStudent;
+
+  public static final MediaType APPLICATION_JSON_UTF8 = MediaType.APPLICATION_JSON;
+
   @BeforeAll
   public static  void setup() {
     request = new MockHttpServletRequest();
@@ -94,9 +109,7 @@ public class GradebookControllerTest {
   }
 
   @Test
-  public void placeHolder() {
-
-  }
+  public void
 
   @AfterEach
   public void setupAfterTransaction() {
