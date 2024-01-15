@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
@@ -43,15 +44,36 @@ public class StudentAndGradeServiceTest {
   @Autowired
   private HistoryGradesDao historyGradesDao;
 
+  @Value("${sql.script.create.student}")
+  private String sqlAddStudent;
+
+  @Value("${sql.script.create.math.grade}")
+  private String sqlAddMathGrade;
+
+  @Value("${sql.script.create.history.grade}")
+  private String sqlAddHistoryGrade;
+
+  @Value("${sql.script.create.science.grade}")
+  private String sqlAddScienceGrade;
+
+  @Value("${sql.script.delete.student}")
+  private String sqlDeleteStudent;
+
+  @Value("${sql.script.delete.math.grade}")
+  private String sqlDeleteMathGrade;
+
+  @Value("${sql.script.delete.history.grade}")
+  private String sqlDeleteHistoryGrade;
+
+  @Value("${sql.script.delete.science.grade}")
+  private String sqlDeleteScienceGrade;
 
   @BeforeEach
   public void setupDataBase() {
-    jdbc.execute("insert into student(id, firstname, lastname, email_address) " +
-      "values (1, 'Ian', 'McBee', 'ian@mcbee')");
-
-    jdbc.execute("insert into math_grade(id, student_id, grade) values (1,1,100.00)");
-    jdbc.execute("insert into science_grade(id, student_id, grade) values (1,1,100.00)");
-    jdbc.execute("insert into history_grade(id, student_id, grade) values (1,1,100.00)");
+    jdbc.execute(sqlAddStudent);
+    jdbc.execute(sqlAddMathGrade);
+    jdbc.execute(sqlAddHistoryGrade);
+    jdbc.execute(sqlAddScienceGrade);
   }
 
   @Test
@@ -182,9 +204,9 @@ public class StudentAndGradeServiceTest {
 
   @AfterEach
   public void setUpAfterTransaction() {
-    jdbc.execute("delete from student");
-    jdbc.execute("delete from math_grade");
-    jdbc.execute("delete from science_grade");
-    jdbc.execute("delete from history_grade");
+    jdbc.execute(sqlDeleteStudent);
+    jdbc.execute(sqlDeleteMathGrade);
+    jdbc.execute(sqlDeleteHistoryGrade);
+    jdbc.execute(sqlDeleteScienceGrade);
   }
 }
