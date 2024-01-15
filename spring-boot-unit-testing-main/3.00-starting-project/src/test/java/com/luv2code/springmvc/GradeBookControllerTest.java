@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -50,19 +51,48 @@ public class GradeBookControllerTest {
   @Mock
   private StudentAndGradeService studentCreateServiceMock;
 
+  @Value("${sql.script.create.student}")
+  private String sqlAddStudent;
+
+  @Value("${sql.script.create.math.grade}")
+  private String sqlAddMathGrade;
+
+  @Value("${sql.script.create.history.grade}")
+  private String sqlAddHistoryGrade;
+
+  @Value("${sql.script.create.science.grade}")
+  private String sqlAddScienceGrade;
+
+  @Value("${sql.script.delete.student}")
+  private String sqlDeleteStudent;
+
+  @Value("${sql.script.delete.math.grade}")
+  private String sqlDeleteMathGrade;
+
+  @Value("${sql.script.delete.history.grade}")
+  private String sqlDeleteHistoryGrade;
+
+  @Value("${sql.script.delete.science.grade}")
+  private String sqlDeleteScienceGrade;
+
+  @Autowired
+  private StudentAndGradeService studentService;
+
   // this is static because all BeforeAll methods must be static
   @BeforeAll
   public static void setup() {
     request = new MockHttpServletRequest();
-    request.setParameter("firstname", "Ian");
-    request.setParameter("lastname", "McBee");
-    request.setParameter("emailAddress", "ian@mcbee");
+    request.setParameter("firstname", "Ian2");
+    request.setParameter("lastname", "McBee2");
+    request.setParameter("emailAddress", "ian@mcbee2");
   }
 
   @BeforeEach
   public void beforeEach() {
-    jdbcTemplate.execute("insert into student(id, firstname, lastname, email_address) " +
-      "values (1, 'Ian', 'McBee', 'ian@mcbee')");
+    jdbcTemplate.execute(sqlAddStudent);
+    jdbcTemplate.execute(sqlAddMathGrade);
+    jdbcTemplate.execute(sqlAddHistoryGrade);
+    jdbcTemplate.execute(sqlAddScienceGrade);
   }
 
   @Test
@@ -108,7 +138,7 @@ public class GradeBookControllerTest {
     assert modelAndView != null;
     ModelAndViewAssert.assertViewName(modelAndView, "index");
 
-    CollegeStudent verifyStudent = studentDao.findByEmailAddress("ian@mcbee");
+    CollegeStudent verifyStudent = studentDao.findByEmailAddress("ian@mcbee2");
     
     assertNotNull(verifyStudent, "Student should be found");
   }
@@ -141,8 +171,80 @@ public class GradeBookControllerTest {
     ModelAndViewAssert.assertViewName(modelAndView, "error");
   }
 
+  @Test
+  public void studentInformationHttpRequest() throws Exception {
+
+    assertTrue(studentDao.findById(1).isPresent());
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/studentInformation/{id}", 1))
+      .andExpect(status().isOk()).andReturn();
+
+    ModelAndView modelAndView = mvcResult.getModelAndView();
+
+    ModelAndViewAssert.assertViewName(modelAndView, "studentInformation");
+
+  }
+
+  @Test
+  public void studentInformationHttpStudentDoesNotExistRequest() throws Exception {
+    assertFalse(studentDao.findById(0).isPresent());
+
+    MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/studentInformation/{id}", 0))
+      .andExpect(status().isOk()).andReturn();
+
+    ModelAndView modelAndView = mvcResult.getModelAndView();
+
+    ModelAndViewAssert.assertViewName(modelAndView, "error");
+  }
+
+  @Test
+  public void createValidGradeHttpRequest() throws Exception {
+    assertTrue(studentDao.findById(1). isPresent());
+
+    GradebookCollegeStudent student = studentService.studentInformation(1);
+
+    assertEquals(1, student.getStudentGrades().getMathGradeResults().size());
+
+    MvcResult mvcResult = this.mockMvc.perform(post("/grades")
+      .contentType(MediaType.APPLICATION_JSON)
+      .param("grade", "85.00")
+      .param("gradeType", "math")
+      .param("studentId", "1")
+    ).andExpect(status().isOk()).andReturn();
+
+    ModelAndView modelAndView = mvcResult.getModelAndView();
+
+    ModelAndViewAssert.assertViewName(modelAndView, "studentInformation");
+
+    student = studentService.studentInformation(1);
+
+    assertEquals(2, student.getStudentGrades().getMathGradeResults().size());
+  }
+
+  @Test
+  public void createAValidGradeHttpRequestDoesNotExistEmptyResponse() throws Exception {
+    MvcResult mvcResult = this.mockMvc.perform(post("/grades")
+      .contentType(MediaType.APPLICATION_JSON)
+      .param("grade", "85.00")
+      .param("gradeType", "history")
+      .param("studentId", "0")
+    ).andExpect(status().isOk()).andReturn();
+
+    ModelAndView modelAndView = mvcResult.getModelAndView();
+
+    ModelAndViewAssert.assertViewName(modelAndView, "error");
+  }
+
+  @Test
+  public void createANonValidGradeHttpRequestGradeTypeDoesNotExistEmptyResponse() throws Exception {
+
+  }
+
   @AfterEach
   public void setUpAfterTransaction() {
-    jdbcTemplate.execute("delete from student");
+    jdbcTemplate.execute(sqlDeleteStudent);
+    jdbcTemplate.execute(sqlDeleteMathGrade);
+    jdbcTemplate.execute(sqlDeleteHistoryGrade);
+    jdbcTemplate.execute(sqlDeleteScienceGrade);
   }
 }

@@ -47,7 +47,36 @@ public class GradebookController {
 
   @GetMapping("/studentInformation/{id}")
   public String studentInformation(@PathVariable int id, Model m) {
+    if (!studentService.checkIfStudentIsNull(id)) {
+      return "error";
+    }
+
+    // add grade averages
+    studentService.configureStudentInformationModel(id, m);
+
     return "studentInformation";
   }
+
+  @PostMapping(value = "/grades")
+  public String createGrade(@RequestParam("grade") double grade,
+                            @RequestParam("gradeType") String gradeType,
+                            @RequestParam("studentId") int studentId,
+                            Model m) {
+
+    if (!studentService.checkIfStudentIsNull(studentId)) {
+      return "error";
+    }
+
+    boolean sucess = studentService.createGrade(grade, studentId, gradeType);
+
+    if (!sucess) {
+      return "error";
+    }
+
+    studentService.configureStudentInformationModel(studentId, m);
+
+    return "studentInformation";
+  }
+
 
 }
